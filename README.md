@@ -30,4 +30,4 @@ df = hx.GetData(workbook path)
 ```
 
 Functions List:
-[link](./https://github.com/cwalenciak/AXL/edit/main/Axl%20Guid.md#section-name)
+[link](./https://github.com/cwalenciak/AXL/edit/main/Axl%20Guide.md#section-name)
