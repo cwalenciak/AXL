@@ -1,6 +1,5 @@
-# Helix
 
-
+![](https://github.com/cwalenciak/Helix/blob/main/Helix%20Logo.png)
 
 ## Toolkit for Data Processing & Transformations
 
