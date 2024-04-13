@@ -15,7 +15,7 @@ AXL is a native Excle VBA library that lives inside of a class module. It allows
 Download the AXL.cls and import it into a workbook
 
 
-### Required Reference Libraries:
+### Required References:
 - Microsoft Scripting Runtime
 - Microsfot Forms 2.0 Object Library
 
@@ -29,3 +29,5 @@ dim df
 df = hx.GetData(workbook path)
 ```
 
+Functions List:
+[link](./https://github.com/cwalenciak/AXL/edit/main/Axl%20Guid.md#section-name)
