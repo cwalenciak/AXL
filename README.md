@@ -11,7 +11,7 @@ AXL is a native Excle VBA library that lives inside of a class module. It allows
 - Send workflows to whoever has access to Excel to be reused
 
 ### Conventions Used:
-- df: This means a 2D array needs to be passed. It stands for dataframe, and is used to better aligne with other programing languages such as r or Python.
+- df: This means a 2D array needs to be passed. It stands for dataframe, and is used to better align with other programing languages such as r or Python.
 - arr: This means a 1D array needs to be passed.
 - col: Singular col, or column, indicates that a scalar value needs to be passed.
 
