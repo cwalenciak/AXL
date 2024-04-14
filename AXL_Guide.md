@@ -210,11 +210,151 @@ Drop a specific index in an array.
 Function ArrayDrop(ByVal arr, index)
 ```
 
-- **arr**: Array <br/>
+#### Agruments:
+- **arr**: Array that will have an index dropped. <br/>
 - **index**: Index to be dropped. <br/>
 
 #### Returns:
 An array
+
+[Back to Top](#Functions-List)
+
+---
+
+[comment]: <> (==============================================================================)
+[comment]: <> (==============================================================================)
+
+## ArrayPrint
+Prints out the elements of an array.
+
+```
+ArrayPrint(ByVal arr)
+```
+
+#### Agruments:
+- **arr**: Array that will have its elements printed out. <br/>
+
+#### Returns:
+An array
+
+[Back to Top](#Functions-List)
+
+---
+
+[comment]: <> (==============================================================================)
+[comment]: <> (==============================================================================)
+
+
+## ArrayReplace
+Replaced a specific element of an array with a replacement element.
+
+```
+ArrayReplace(arr, findElem, replaceElem)
+```
+
+#### Agruments:
+- **arr**: Array that will have its elements printed out. <br/>
+- **findElem**: Element to replace. <br/>
+- **replaceElem**: Replacement element. <br/>
+
+#### Returns:
+An array
+
+[Back to Top](#Functions-List)
+
+---
+
+[comment]: <> (==============================================================================)
+[comment]: <> (==============================================================================)
+
+
+## CastTo
+Cast a columns elements to a different type.
+
+```
+ArrayReplace(arr, findElem, replaceElem)
+```
+
+#### Agruments:
+- **df**: Dataframe <br/>
+- **col**: Column that contains the elements to change types. <br/>
+- **typeToCast**: A enumeration selection of available types to cast your elements to. <br/>
+
+#### Returns:
+A dataframe
+
+[Back to Top](#Functions-List)
+
+
+---
+
+[comment]: <> (==============================================================================)
+[comment]: <> (==============================================================================)
+
+
+## ChangeCell
+Change a specific element of a dataframe
+
+```
+ChangeCell(ByVal df, ByVal col, ByVal row, item)
+```
+
+#### Agruments:
+- **df**: Dataframe <br/>
+- **col**: Column that contains the cell you want to change. <br/>
+- **row**: Row that contains the cell you want to change. <br/>
+- **item**: Item you want to change the old cell element to. <br/>
+
+#### Returns:
+A dataframe
+
+[Back to Top](#Functions-List)
+
+---
+
+[comment]: <> (==============================================================================)
+[comment]: <> (==============================================================================)
+
+
+## ChangeQty
+Calculate the change of a column by shifting the data down and getting the difference. A new columne will be created.
+
+```
+ChangeQty(ByVal df, valueCol, Optional groupCol, Optional percChg = False, Optional name = "Chg")
+```
+
+#### Agruments:
+- **df**: Dataframe <br/>
+- **valueCol**: Column whose change will be calculated off of . <br/>
+- **groupCol (optional)**: Column that will group values to calculate the change. Change will only be calculated withing a group <br/>
+- **percChg (optional)**: Boolean to indicate if the change chould be a percentage. <br/>
+
+#### Returns:
+A dataframe
+
+[Back to Top](#Functions-List)
+
+
+
+---
+
+[comment]: <> (==============================================================================)
+[comment]: <> (==============================================================================)
+
+
+## ColMean
+Calculate the mean of a column.
+
+```
+ColMean(ByVal df, col)
+```
+
+#### Agruments:
+- **df**: Dataframe <br/>
+- **col**: Column whose mean will be calculated. <br/>
+
+#### Returns:
+A scalar
 
 [Back to Top](#Functions-List)
 
