@@ -20,7 +20,7 @@ AddCols(ByVal df, ByVal ColNames)
 #### Returns:
 A dataframe
 
-[Back to Top](#Functions_List)
+[Back to Top](#Functions-List)
 
 ---
 
@@ -41,7 +41,7 @@ AddCols(ByVal df, ByVal ColNames)
 #### Returns:
 A dataframe
 
-[Back to Top](#Functions_List)
+[Back to Top](#Functions-List)
 
 ---
 
@@ -64,7 +64,7 @@ AddIndex(ByVal df, Optional indexName As String = "<INDEX>", Optional posOne As 
 #### Returns:
 A dataframe
 
-[Back to Top](#Functions_List)
+[Back to Top](#Functions-List)
 
 ---
 
@@ -89,7 +89,7 @@ AddQuarterCol(ByVal df, ByVal monthCol, Optional colName = "Qtr", Optional prefi
 #### Returns:
 A dataframe
 
-[Back To Funtctions List](#Functions_List)
+[Back to Top](#Functions-List)
 
 ---
 
@@ -110,7 +110,7 @@ AddTotalRow(ByVal df, ByVal numCols)
 #### Returns:
 A dataframe
 
-[Back to Top](#Functions_List)
+[Back to Top](#Functions-List)
 
 ---
 
@@ -133,7 +133,7 @@ Append(ByVal df, ByVal col, ByVal item, Optional infront As Boolean = False)
 #### Returns:
 A dataframe
 
-[Back to Top](#Functions_List)
+[Back to Top](#Functions-List)
 
 ---
 
@@ -153,7 +153,7 @@ ArrayAppend(ByVal arr, items)
 #### Returns:
 An array
 
-[Back to Top](#Functions_List)
+[Back to Top](#Functions-List)
 
 ---
 
@@ -175,7 +175,7 @@ ArrayAppendElem(ByVal arr, item, Optional infront = False)
 #### Returns:
 An array
 
-[Back to Top](#Functions_List)
+[Back to Top](#Functions-List)
 
 ---
 
@@ -196,7 +196,7 @@ ArrayCombine(ByVal arr1, ByVal arr2)
 #### Returns:
 An array
 
-[Back to Top](#Functions_List)
+[Back to Top](#Functions-List)
 
 ---
 
@@ -216,5 +216,5 @@ Function ArrayDrop(ByVal arr, index)
 #### Returns:
 An array
 
-[Back to Top](#Functions_List)
+[Back to Top](#Functions-List)
 
