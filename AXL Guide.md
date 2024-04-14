@@ -20,7 +20,7 @@ AddCols(ByVal df, ByVal ColNames)
 #### Returns:
 A dataframe
 
-[Back To Funtctions List](#Functions_List)
+[Back to Top](#Functions_List)
 
 ---
 
@@ -40,6 +40,8 @@ AddCols(ByVal df, ByVal ColNames)
 
 #### Returns:
 A dataframe
+
+[Back to Top](#Functions_List)
 
 ---
 
@@ -62,7 +64,7 @@ AddIndex(ByVal df, Optional indexName As String = "<INDEX>", Optional posOne As 
 #### Returns:
 A dataframe
 
-[Back To Funtctions List](#Functions_List)
+[Back to Top](#Functions_List)
 
 ---
 
@@ -108,7 +110,7 @@ AddTotalRow(ByVal df, ByVal numCols)
 #### Returns:
 A dataframe
 
-[Back To Funtctions List](#Functions_List)
+[Back to Top](#Functions_List)
 
 ---
 
@@ -131,7 +133,7 @@ Append(ByVal df, ByVal col, ByVal item, Optional infront As Boolean = False)
 #### Returns:
 A dataframe
 
-[Back To Funtctions List](#Functions_List)
+[Back to Top](#Functions_List)
 
 ---
 
@@ -151,7 +153,7 @@ ArrayAppend(ByVal arr, items)
 #### Returns:
 An array
 
-[Back To Funtctions List](#Functions_List)
+[Back to Top](#Functions_List)
 
 ---
 
@@ -173,7 +175,7 @@ ArrayAppendElem(ByVal arr, item, Optional infront = False)
 #### Returns:
 An array
 
-[Back To Funtctions List](#Functions_List)
+[Back to Top](#Functions_List)
 
 ---
 
@@ -194,7 +196,7 @@ ArrayCombine(ByVal arr1, ByVal arr2)
 #### Returns:
 An array
 
-[Back To Funtctions List](#Functions-List)
+[Back to Top](#Functions_List)
 
 ---
 
@@ -202,4 +204,17 @@ An array
 [comment]: <> (==============================================================================)
 
 ## ArrayDrop
+Drop a specific index in an array.
+
+```
+Function ArrayDrop(ByVal arr, index)
+```
+
+- **arr**: Array <br/>
+- **index**: Index to be dropped. <br/>
+
+#### Returns:
+An array
+
+[Back to Top](#Functions_List)
 
