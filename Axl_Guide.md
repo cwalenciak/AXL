@@ -1,4 +1,10 @@
+## Functions List
 [AbsVal](#ArrayAppend)
+
+---
+
+[comment]: <> (==============================================================================)
+[comment]: <> (==============================================================================)
 
 ## AbsVal
 Applies an absolute value function to each element in the dataframe for the specified columns.
@@ -13,6 +19,8 @@ AddCols(ByVal df, ByVal ColNames)
 
 #### Returns:
 A dataframe
+
+[Back To Funtctions List](#Functions_List)
 
 ---
 
@@ -160,7 +168,7 @@ An array
 [comment]: <> (==============================================================================)
 [comment]: <> (==============================================================================)
 
-# ArrayCombine
+## ArrayCombine
 Combines two arrays into one. 
 
 ```
