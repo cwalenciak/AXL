@@ -32,5 +32,5 @@ dim df
 df = ax.GetData(workbook path)
 ```
 
-[Axl Guide](Axl_Guide.md)
+[Axl Guide](AXL-Guide.md)
 
