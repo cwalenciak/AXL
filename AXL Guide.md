@@ -1,5 +1,5 @@
 ## Functions List
-[AbsVal](#ArrayAppend)
+[AbsVal](#AbsVal)
 
 ---
 
@@ -62,6 +62,8 @@ AddIndex(ByVal df, Optional indexName As String = "<INDEX>", Optional posOne As 
 #### Returns:
 A dataframe
 
+[Back To Funtctions List](#Functions_List)
+
 ---
 
 [comment]: <> (==============================================================================)
@@ -85,6 +87,8 @@ AddQuarterCol(ByVal df, ByVal monthCol, Optional colName = "Qtr", Optional prefi
 #### Returns:
 A dataframe
 
+[Back To Funtctions List](#Functions_List)
+
 ---
 
 [comment]: <> (==============================================================================)
@@ -103,6 +107,8 @@ AddTotalRow(ByVal df, ByVal numCols)
   
 #### Returns:
 A dataframe
+
+[Back To Funtctions List](#Functions_List)
 
 ---
 
@@ -125,6 +131,8 @@ Append(ByVal df, ByVal col, ByVal item, Optional infront As Boolean = False)
 #### Returns:
 A dataframe
 
+[Back To Funtctions List](#Functions_List)
+
 ---
 
 [comment]: <> (==============================================================================)
@@ -142,6 +150,8 @@ ArrayAppend(ByVal arr, items)
 
 #### Returns:
 An array
+
+[Back To Funtctions List](#Functions_List)
 
 ---
 
@@ -162,6 +172,8 @@ ArrayAppendElem(ByVal arr, item, Optional infront = False)
 
 #### Returns:
 An array
+
+[Back To Funtctions List](#Functions_List)
 
 ---
 
@@ -188,3 +200,6 @@ An array
 
 [comment]: <> (==============================================================================)
 [comment]: <> (==============================================================================)
+
+## ArrayDrop
+
