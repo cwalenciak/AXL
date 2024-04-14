@@ -182,6 +182,8 @@ ArrayCombine(ByVal arr1, ByVal arr2)
 #### Returns:
 An array
 
+[Back To Funtctions List](#Functions_List)
+
 ---
 
 [comment]: <> (==============================================================================)
