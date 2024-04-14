@@ -1,3 +1,5 @@
+[AbsVal](#ArrayAppend)
+
 ## AbsVal
 Applies an absolute value function to each element in the dataframe for the specified columns.
 
@@ -158,7 +160,7 @@ An array
 [comment]: <> (==============================================================================)
 [comment]: <> (==============================================================================)
 
-## ArrayCombine
+# ArrayCombine
 Combines two arrays into one. 
 
 ```
