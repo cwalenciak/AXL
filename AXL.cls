@@ -2,7 +2,7 @@ VERSION 1.0 CLASS
 BEGIN
   MultiUse = -1  'True
 END
-Attribute VB_Name = "helix"
+Attribute VB_Name = "AXL"
 Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
@@ -70,10 +70,6 @@ Enum AggragatorOp
     sumAggr
     meanAggr
     medianAggr
-    maxAggr
-    minAggr
-    sdevAggr
-    sdevpAggr
 End Enum
 
 
@@ -82,6 +78,9 @@ Enum KeepType
     last
     all
 End Enum
+
+
+
 
 
 
@@ -118,7 +117,7 @@ Function AddCols(ByVal df, ByVal ColNames)
         1 To UBound(df), _
         1 To UBound(df, 2) + UBound(ColNames) + 1 _
     )
-        
+    
     Dim i
     If IsArray(ColNames) = True Then
         For i = LBound(ColNames) To UBound(ColNames)
@@ -129,109 +128,6 @@ Function AddCols(ByVal df, ByVal ColNames)
     AddCols = df
         
 End Function
-
-
-
-Function AddGroupIndex2(ByVal df, ByVal groupCols)
-    
-    groupCols = ScalarToArray(groupCols)
-    groupCols = HeaderIndex(groupCols, df)
-    
-    ReDim Preserve df( _
-        1 To UBound(df), _
-        1 To UBound(df, 2) + 1 _
-    )
-    
-    df(1, UBound(df, 2)) = "GROUP_INDEX"
-    
-    Dim incr
-    incr = 1
-    
-    Dim i
-    For i = LBound(df) + 1 To UBound(df)
-        Debug.Print df(i, 1)
-        If incr = 1 Then
-            df(i, UBound(df, 2)) = incr
-            incr = incr + 1
-        Else
-            
-            Dim outcome
-            outcome = True
-            
-            Dim elem
-            For Each elem In groupCols
-                
-                If df(i, elem) <> df(i - 1, elem) Then
-                    outcome = False
-                    Exit For
-                End If
-            
-            Next elem
-            
-            If outcome Then
-                df(i, UBound(df, 2)) = incr
-                incr = incr + 1
-            Else
-                incr = 1
-                df(i, UBound(df, 2)) = incr
-            End If
-        
-        End If
-        
-    Next i
-    
-    AddGroupIndex2 = df
-    
-End Function
-
-
-Function AddGroupIndex(ByVal df, ByVal groupCols)
-    
-    groupCols = ScalarToArray(groupCols)
-    groupCols = HeaderIndex(groupCols, df)
-    
-    ReDim Preserve df( _
-        1 To UBound(df), _
-        1 To UBound(df, 2) + 1 _
-    )
-    
-    df(1, UBound(df, 2)) = "GROUP_INDEX"
-    
-    Dim incr
-    incr = 1
-    
-    Dim i
-    For i = LBound(df) + 1 To UBound(df)
-
-        Dim outcome
-        outcome = True
-        
-        Dim elem
-        For Each elem In groupCols
-            
-            If df(i, elem) <> df(i - 1, elem) Then
-                outcome = False
-                Exit For
-            End If
-        
-        Next elem
-        
-        
-        If outcome Then
-            incr = incr + 1
-            df(i, UBound(df, 2)) = incr
-        Else
-            incr = 1
-            df(i, UBound(df, 2)) = incr
-        End If
-
-        
-    Next i
-    
-    AddGroupIndex = df
-    
-End Function
-
 
 
 
@@ -293,44 +189,6 @@ Function AddQuarterCol(ByVal df, _
                        
     AddQuarterCol = df
 
-End Function
-
-
-
-Function AddTotalCol(ByVal df, _
-                     ByVal numCols, _
-                     Optional colName = "Total")
-
-    numCols = ScalarToArray(numCols)
-    numCols = HeaderIndex(numCols, df)
-     
-    ReDim Preserve df( _
-        1 To UBound(df), _
-        1 To UBound(df, 2) + 1 _
-    )
-    
-    df(1, UBound(df, 2)) = colName
-    
-    Dim i
-    For i = LBound(df) + 1 To UBound(df)
-    
-        Dim total As Double
-        total = 0
-        
-        Dim j
-        For j = LBound(numCols) To UBound(numCols)
-            If IsNumeric(df(i, numCols(j))) = True Then
-                total = total + df(i, numCols(j))
-            End If
-        Next j
-        
-        df(i, UBound(df, 2)) = total
-    
-    Next i
-    
-
-    AddTotalCol = df
-    
 End Function
 
 
@@ -458,12 +316,13 @@ Function ArrayCombine(ByVal arr1, ByVal arr2)
     
     
     For i = LBound(arr2) To UBound(arr2)
-        temparr(1 + UBound(arr1) + i) = arr2(i)
+        temparr(1 + UBound(arr1)) = arr2(i)
     Next i
     
     ArrayCombine = temparr
 
 End Function
+
 
 
 Function ArrayDrop(ByVal arr, index)
@@ -516,45 +375,18 @@ End Function
 
 
 
-Function CalculateSlope(ByVal df, xcol, ycol)
 
-    Dim xy
-    xy = "xy"
+Function ArrayToDF(arr)
     
-    Dim x2
-    x2 = "x2"
-
-    df = AddCols(df, Array(xy, x2))
+    ReDim tempdf(1 To UBound(arr) + 1, 1 To 1)
     
-    df = Math(df, xy, Array(xcol, ycol), Multiply)
-    df = Math(df, x2, Array(xcol), Exponent, 2)
+    Dim i
+    For i = LBound(tempdf) To UBound(tempdf)
+        tempdf(i, 1) = arr(i - 1)
+    Next i
     
-    Dim xSum
-    xSum = SumCols(df, xcol)
+    ArrayToDF = tempdf
     
-    Dim ySum
-    ySum = SumCols(df, ycol)
-    
-    Dim xySum
-    xySum = SumCols(df, xy)
-    
-    Dim nxySum
-    nxySum = xySum * (UBound(df) - 1)
-    
-    Dim nx2sum
-    nx2sum = SumCols(df, x2) * (UBound(df) - 1)
-    
-    Dim xSum2
-    xSum2 = xSum * xSum
-    
-    Dim numerator
-    numerator = nxySum - (xSum * ySum)
-    
-    Dim denominator
-    denominator = nx2sum - xSum2
-    
-    CalculateSlope = numerator / denominator
-
 End Function
 
 
@@ -593,10 +425,7 @@ End Function
 
 
 
-Function ChangeCell(ByVal df, _
-                    ByVal col, _
-                    ByVal row, _
-                    item)
+Function ChangeCell(ByVal df, ByVal col, ByVal row, item)
 
     col = HeaderIndex(col, df)
     
@@ -613,13 +442,7 @@ Function ChangeQty(ByVal df, _
                    Optional groupCol, _
                    Optional percChg = False, _
                    Optional name = "Chg")
-
-    '------------------------------------------------------
-    '# Description:
-    '# Calculate the change of a column by shifting the
-    '# data down and getting the difference
-    '------------------------------------------------------
-    
+ 
     df = ShiftDown(df, valueCol, groupCol, name)
     
     valueCol = HeaderIndex(valueCol, df)
@@ -644,39 +467,23 @@ Function ChangeQty(ByVal df, _
 End Function
 
 
+
 Function ColMean(ByVal df, col)
     
-    col = HeaderIndex(col, df)
-    
-    ColMean = ColMean_Logic(df, col)
-    
-End Function
+    Dim obsCount
+    obsCount = (UBound(df) - 1)
 
-
-Function ColMean_Logic(ByVal df, col)
-
-    Dim iSum
-    Dim iCount
-    
-    Dim i
-    For i = LBound(df) + 1 To UBound(df)
-        If IsNumeric(df(i, col)) Then
-            iSum = iSum + df(i, col)
-            iCount = iCount + 1
-        End If
-    Next
-    
-    If iCount > 0 Then
-        ColMean_Logic = iSum / iCount
+    If obsCount > 0 Then
+        ColMean = SumCols(df, col) / obsCount
     Else
-        ColMean_Logic = "<!ERROR!>: Count is 0"
+        ColMean = "<!ERROR in ColMean!>: df is empty"
     End If
 
 End Function
 
 
 
-Function ColToArray(df, col, Optional numericArr = False)
+Function ColToArray(df, col)
     
     col = HeaderIndex(col, df)
     
@@ -684,43 +491,12 @@ Function ColToArray(df, col, Optional numericArr = False)
     
     Dim i
     For i = LBound(df) To UBound(df) - 1
-        If Not numericArr Then
-            arr(i) = df(i + 1, col)
-        Else
-            If df(i + 1, col) = "" Then
-                arr(i) = 0
-            Else
-                arr(i) = df(i + 1, col)
-            End If
-        End If
+        arr(i) = df(i + 1, col)
     Next i
     
     ColToArray = arr
     
 End Function
-
-
-
-Sub ColToCmbx(ByVal df, _
-              col, _
-              ByVal cmbx As ComboBox, _
-              Optional displayItemOne As Boolean = True, _
-              Optional excludeFirstRow As Boolean = True)
-
-    cmbx.Clear
-    
-    col = HeaderIndex(col, df)
-    
-    Dim i As Long
-    For i = LBound(df) + Abs(excludeFirstRow) To UBound(df)
-        cmbx.AddItem df(i, col)
-    Next i
-              
-    If displayItemOne = True Then
-        cmbx.value = df(LBound(df) + Abs(excludeFirstRow), col)
-    End If
-    
-End Sub
 
 
 
@@ -970,12 +746,16 @@ Function CrossJoinArr(ByVal df, arr, Optional newCOl = "arr")
     
     ReDim tempdf(1 To rowCount + 1, 1 To UBound(df, 2) + 1)
     
+    '# Assign Headers
     Dim i
     For i = LBound(df, 2) To UBound(df, 2)
         tempdf(1, i) = df(1, i)
     Next i
     
     tempdf(1, UBound(tempdf, 2)) = newCOl
+    
+    Dim pos
+    pos = 2
     
     For i = LBound(df) + 1 To UBound(df)
     
@@ -987,7 +767,9 @@ Function CrossJoinArr(ByVal df, arr, Optional newCOl = "arr")
                 tempdf(pos, UBound(tempdf, 2)) = arr(j)
                 tempdf(pos, k) = df(i, k)
             Next k
-        
+            
+            pos = pos + 1
+            
         Next j
     
     Next i
@@ -1049,6 +831,7 @@ Function DateExtract(ByVal df, _
             
             Case MonthNameExtract
                 If IsDate(df(i, col)) = True Then
+                
                     df(i, colToFill) = Month(df(i, col))
                     
                     Select Case df(i, colToFill)
@@ -1162,14 +945,14 @@ Function Duplicated(ByVal df, _
     indexCol = UBound(df, 2) - 2
     
     Dim fillDupeCol As Long
-    fillDupeCol = UBound(df, 2) - 3
+    fildupeCol = uoubnd(df, 2) - 3
     
     df = fillCol(df, dupeCol, cols)
-    Export df
+    
     Sort_Logic _
         df:=df, _
         sortOnCol:=UBound(df, 2), _
-        lowerBounds:=LBound(df) + 1, _
+        lowerBounds:=lbounds(df) + 1, _
         UpperBounds:=UBound(df)
         
     Dim i As Long
@@ -1197,8 +980,6 @@ Function Duplicated(ByVal df, _
                 df(i, indexCol) = df(i - 1, indexCol) + 1
                 df(i, fillDupeCol) = True
                 df(i, firstLastCol) = "middle"
-            End If
-            
         Else
         
             If df(i, dupeCol) = df(i - 1, dupeCol) Then
@@ -1292,9 +1073,9 @@ Function FileData(filesFldrPath)
     Dim fldr As Folder
     Set fldr = fso.GetFolder(filesFldrPath)
     
-    If fldr.Files.Count > 0 Then
+    If fldr.Files.count > 0 Then
     
-        ReDim df(1 To fldr.Files.Count + 1, 1 To 3)
+        ReDim df(1 To fldr.Files.count + 1, 1 To 3)
     
         df(1, 1) = "Path"
         df(1, 2) = "Name"
@@ -1728,146 +1509,6 @@ End Function
 
 
 
-
-Function FullJoin2(ByVal df, ByVal joindf, ByVal onCols)
-    
-    Dim tempdf
-    tempdf = SelectCols(joindf, onCols)
-    tempdf = AddGroupIndex(tempdf, onCols)
-    tempdf = Filter(tempdf, 1, "GROUP_INDEX", GreaterThan)
-    tempdf = DropCol(tempdf, "GROUP_INDEX")
-    tempdf = Join(tempdf, onCols, df, , , False)
-    
-    
-    df = Stack(df, tempdf)
-    df = Sort(df, onCols)
-    FullJoin2 = df
-    
-End Function
-
-
-
-
-Function FullJoin(ByVal df, _
-                  ByVal onCols, _
-                  ByVal joindf, _
-                  Optional joinCols, _
-                  Optional rightOn, _
-                  Optional includeDupes = False)
-
-
-    If includeDupes Then
-        FullJoin = FullJoin_DUPES(df, onCols, joindf, joinCols, rightOn)
-    Else
-        FullJoin = FullJoin_NO_DUPES(df, onCols, joindf, joinCols, rightOn)
-    End If
-    
-End Function
-
-
-
-
-Function FullJoin_DUPES(ByVal df, ByVal onCols, ByVal joindf, Optional joinCols, Optional rightOn)
-    
-    '# Duplicating rows where there are multiple matches
-    Dim tempdf
-    tempdf = SelectCols(joindf, onCols)
-    tempdf = AddGroupIndex(tempdf, onCols)
-    tempdf = Filter(tempdf, 1, "GROUP_INDEX", GreaterThan)
-    tempdf = DropCol(tempdf, "GROUP_INDEX")
-    tempdf = Join(tempdf, onCols, df, , , False)
-    df = Stack(df, tempdf)
-    df = Sort(df, onCols)
-    
-    onCols = ScalarToArray(onCols)
-
-    If IsMissing(rightOn) Then
-        rightOn = onCols
-    Else
-        rightOn = ScalarToArray(rightOn)
-    End If
-    
-    '# Bringing in Duplicate Data by adding group index
-    df = AddGroupIndex(df, onCols)
-
-    joindf = AddGroupIndex(joindf, rightOn)
-    
-    onCols = ArrayCombine(onCols, Array("GROUP_INDEX"))
-    rightOn = ArrayCombine(rightOn, Array("GROUP_INDEX"))
-
-
-    Dim onElems
-    onElems = SelectCols(df, onCols)
-    
-    rightOn = HeaderIndex(rightOn, joindf)
-    
-    Dim i
-    For i = LBound(onCols) To UBound(onCols)
-        joindf(1, rightOn(i)) = onCols(i)
-    Next i
-    
-    Dim rightOnElems
-    rightOnElems = SelectCols(joindf, onCols)
-
-    onElems = Stack(onElems, rightOnElems)
-    onElems = Unique(onElems, onCols)
-
-    tempdf = Join(onElems, onCols, df, , , False)
-    tempdf = Join(tempdf, onCols, joindf, joinCols, , False)
-    tempdf = DropCol(tempdf, "GROUP_INDEX")
-    
-    FullJoin_DUPES = tempdf
-    
-End Function
-
-
-
-Function FullJoin_NO_DUPES(ByVal df, onCols, ByVal joindf, Optional joinCols, Optional rightOn)
-
-    onCols = ScalarToArray(onCols)
-    
-    Dim onElems
-    onElems = SelectCols(df, onCols)
-    
-    If IsMissing(rightOn) Then
-        rightOn = onCols
-    Else
-        rightOn = ScalarToArray(rightOn)
-    End If
-    
-    rightOn = HeaderIndex(rightOn, joindf)
-    
-    Dim i
-    For i = LBound(onCols) To UBound(onCols)
-        joindf(1, rightOn(i)) = onCols(i)
-    Next i
-    
-    Dim rightOnElems
-    rightOnElems = SelectCols(joindf, onCols)
-    
-    onElems = Stack(onElems, rightOnElems)
-    onElems = Unique(onElems, onCols)
-    
-    Dim tempdf
-    tempdf = Join(onElems, onCols, df, , , False)
-    tempdf = Join(tempdf, onCols, joindf, joinCols, , False)
-    
-    FullJoin_NO_DUPES = tempdf
-    
-End Function
-
-
-
-
-
-
-
-
-
-
-
-
-
 Function FolderData(filesFldrPath)
 
     Dim fso As FileSystemObject
@@ -1876,9 +1517,9 @@ Function FolderData(filesFldrPath)
     Dim fldr As Folder
     Set fldr = fso.GetFolder(filesFldrPath)
  
-    If fldr.SubFolders.Count > 0 Then
+    If fldr.SubFolders.count > 0 Then
     
-        ReDim df(1 To fldr.SubFolders.Count + 1, 1 To 2)
+        ReDim df(1 To fldr.SubFolders.count + 1, 1 To 2)
         
         df(1, 1) = "Name"
         df(1, 2) = "Path"
@@ -1914,9 +1555,9 @@ Function FolderNames(foldersPath)
     Dim fldr As Folder
     Set fldr = fso.GetFolder(foldersPath)
     
-    If fldr.SubFolders.Count > 0 Then
+    If fldr.SubFolders.count > 0 Then
     
-        ReDim df(1 To fldr.SubFolders.Count + 1, 1 To 1)
+        ReDim df(1 To fldr.SubFolders.count + 1, 1 To 1)
         
         df(1, 1) = "Name"
         
@@ -1979,7 +1620,7 @@ Function GetData(Optional wbPath = "", _
     '# Column Count
     Dim colCount As Long
     If endCol = 0 Then
-        colCount = ws.Cells(startRow, Columns.Count).End(xlToLeft).Column
+        colCount = ws.Cells(startRow, Columns.count).End(xlToLeft).Column
     Else
         colCount = endCol
     End If
@@ -1990,7 +1631,7 @@ Function GetData(Optional wbPath = "", _
         Dim i
         For i = StartCol To colCount
             Dim tempRow As Long
-            tempRow = ws.Cells(Rows.Count, i).End(xlUp).row
+            tempRow = ws.Cells(Rows.count, i).End(xlUp).row
             If tempRow > rowCount Then
                 rowCount = tempRow
             End If
@@ -2022,47 +1663,11 @@ Function GetElement(ByVal df, _
 End Function
 
 
-Function RollUp(ByVal df, categoryCols, numCols)
-    
-    categoryCols = ScalarToArray(categoryCols)
-    numCols = ScalarToArray(numCols)
-    
-    Dim keepCols
-    keepCols = ArrayCombine(categoryCols, numCols)
-
-    df = SelectCols(df, keepCols)
-    df = SplitOnCol(df, categoryCols)
-    
-    Dim finaldf
-    
-    Dim i
-    For i = LBound(df) + 1 To UBound(df)
-        
-        Dim tempdf
-        tempdf = df(i, 2)
-        tempdf = AddTotalRow(tempdf, numCols)
-        tempdf(UBound(tempdf), 1) = "Total"
-        tempdf = Filter(tempdf, "Total", 1, EqualTo)
-        
-        Dim catarr
-        catarr = Split(df(i, 1), "<|>")
-               
-        Dim j
-        For j = LBound(catarr) To UBound(catarr)
-            tempdf(2, j + 1) = catarr(j)
-        Next j
-        
-        finaldf = Stack(finaldf, tempdf)
-    Next i
-    
-    RollUp = finaldf
-    
-End Function
 
 Function Group(ByVal df, _
                ByVal groupCols, _
                Optional ByVal numCol, _
-               Optional aggregator As AggragatorOp = countAggr, _
+               Optional aggregator = "count", _
                Optional includeCount = False)
                
     groupCols = ScalarToArray(groupCols)
@@ -2073,6 +1678,7 @@ Function Group(ByVal df, _
         numCol = ScalarToArray(numCol)
         df = SelectCols(df, ArrayCombine(groupCols, numCol))
     End If
+
         
     Dim tempdf
     tempdf = SplitOnCol(df, groupCols)
@@ -2084,24 +1690,18 @@ Function Group(ByVal df, _
     Dim i
     
     '# Check for numcols and default to "count"
-    If Not IsMissing(numCol) And aggregator <> countAggr Then
-        
+    If Not IsMissing(numCol) And LCase(aggregator) <> "count" Then
         numCol = HeaderIndex(numCol, df)
-        
         ReDim Preserve tempdf(1 To UBound(tempdf), 1 To UBound(tempdf, 2) + UBound(numCol) + 1)
-        
         For i = LBound(numCol) To UBound(numCol)
             tempdf(1, 3 + i) = df(1, numCol(i))
         Next i
-        
     End If
     
-    If aggregator = countAggr Or includeCount Then
-        
+    If LCase(aggregator) = "count" Or includeCount Then
         ReDim Preserve tempdf(1 To UBound(tempdf), 1 To UBound(tempdf, 2) + 1)
         CountCol = UBound(tempdf, 2)
         tempdf(1, CountCol) = "Count"
-        
     End If
     
 
@@ -2111,43 +1711,43 @@ Function Group(ByVal df, _
         Dim splitdf
         splitdf = tempdf(i, 2)
         
-        If Not IsMissing(numCol) And aggregator <> countAggr Then
+        If Not IsMissing(numCol) And LCase(aggregator) <> "count" Then
             
             Dim j
             For j = LBound(numCol) To UBound(numCol)
             
                 '# Sum
-                If aggregator = sumAggr Then
+                If LCase(aggregator) = "sum" Then
                     tempdf(i, 3 + j) = SumCols_Logic(splitdf, Array(numCol(j)))
                 End If
                 
                 '# mean
-                If aggregator = meanAggr Then
-                    tempdf(i, 3 + j) = ColMean_Logic(splitdf, numCol(j))
+                If LCase(aggregator) = "mean" Then
+                    tempdf(i, 3 + j) = ColMean(splitdf, numCol(j))
                 End If
                 
                 '# Median
-                If aggregator = medianAggr Then
+                If LCase(aggregator) = "median" Then
                     tempdf(i, 3 + j) = GroupMedian(splitdf, numCol(j))
                 End If
                 
                 '# Min
-                If aggregator = minAggr Then
+                If LCase(aggregator) = "min" Then
                     tempdf(i, 3 + j) = GroupMinMax(splitdf, numCol(j), False)
                 End If
                 
                 '# Max
-                If aggregator = maxAggr Then
+                If LCase(aggregator) = "max" Then
                     tempdf(i, 3 + j) = GroupMinMax(splitdf, numCol(j))
                 End If
                 
                 '# SDev Population
-                If aggregator = sdevpAggr Then
+                If LCase(aggregator) = "sdevp" Then
                     tempdf(i, 3 + j) = GroupStandardDev(splitdf, numCol(j), True)
                 End If
                 
                 '# SDev Sample
-                If aggregator = sdevAggr Then
+                If LCase(aggregator) = "sdev" Then
                     tempdf(i, 3 + j) = GroupStandardDev(splitdf, numCol(j))
                 End If
             
@@ -2156,15 +1756,14 @@ Function Group(ByVal df, _
         End If
         
         '# Count
-        If aggregator = countAggr Or IsMissing(numCol) Or includeCount Then
+        If LCase(aggregator) = "count" Or IsMissing(numCol) Or includeCount Then
             tempdf(i, CountCol) = UBound(splitdf) - 1
         End If
         
     Next i
     
-    
     tempdf = DropCol(tempdf, "NESTED_ARR")
-
+    
     '# Split out groupcols concatenated
     Dim pos As Long
     pos = 2
@@ -2270,28 +1869,27 @@ Function HeaderIndex(ByVal ColNames, ByVal df)
     If IsArray(ColNames) = True Then
         HeaderIndex = HeaderIndexList(ColNames, df)
     Else
-    
         If IsNumeric(ColNames) = False Then
             HeaderIndex = HeaderIndexScalar(ColNames, df)
          Else
             HeaderIndex = ColNames * 1
         End If
-        
     End If
     
 End Function
 
 
-
 Private Function HeaderIndexList(ByVal headerList, ByVal arr)
-
+    
     Dim i
     For i = LBound(headerList) To UBound(headerList)
+    
         If IsNumeric(headerList(i)) = False Then
             headerList(i) = HeaderIndexScalar(headerList(i), arr)
         End If
+    
     Next i
-
+    
     HeaderIndexList = headerList
 
 End Function
@@ -2304,7 +1902,7 @@ Private Function HeaderIndexScalar(ByVal ColNames, ByVal df)
     For i = LBound(df, 2) To UBound(df, 2)
         If df(1, i) = ColNames Then
             Exit For
-        ElseIf i = UBound(df, 2) Then
+        ElseIf i = UBound(df) Then
             Debug.Print "<!ERROR!> Header " & ColNames & " does NOT exist"
         End If
     Next i
@@ -2312,6 +1910,7 @@ Private Function HeaderIndexScalar(ByVal ColNames, ByVal df)
     HeaderIndexScalar = i
 
 End Function
+
 
 
 
@@ -2361,7 +1960,7 @@ End Function
 
 Function Join(ByVal df, _
               ByVal onCols, _
-              ByVal joindf, _
+              ByVal joinDF, _
               Optional ByVal joinCols, _
               Optional rightOn, _
               Optional indicator = True)
@@ -2386,14 +1985,14 @@ Function Join(ByVal df, _
             colstr = colstr & rightOn(i) & "//"
         Next i
         
-        ReDim joinCols(0 To UBound(joindf, 2) - UBound(rightOn) - 2)
+        ReDim joinCols(0 To UBound(joinDF, 2) - UBound(rightOn) - 2)
         
         Dim incr
         incr = 0
         
-        For i = LBound(joindf, 2) To UBound(joindf, 2)
-            If InStr(colstr, joindf(1, i) & "//") = 0 Then
-                joinCols(incr) = joindf(1, i)
+        For i = LBound(joinDF, 2) To UBound(joinDF, 2)
+            If InStr(colstr, joinDF(1, i) & "//") = 0 Then
+                joinCols(incr) = joinDF(1, i)
                 incr = incr + 1
             End If
         Next i
@@ -2405,7 +2004,7 @@ Function Join(ByVal df, _
     df = Join_Logic( _
         df:=df, _
         leftOn:=onCols, _
-        joindf:=joindf, _
+        joinDF:=joinDF, _
         rightOn:=rightOn, _
         joinCols:=joinCols, _
         indicator:=indicator _
@@ -2422,7 +2021,7 @@ End Function
 
 Private Function Join_Logic(ByVal df, _
                             ByVal leftOn, _
-                            ByVal joindf, _
+                            ByVal joinDF, _
                             ByVal rightOn, _
                             ByVal joinCols, _
                             Optional indicator = True)
@@ -2452,33 +2051,33 @@ Private Function Join_Logic(ByVal df, _
     
     
     '# Prepare Right Join
-    ReDim Preserve joindf(1 To UBound(joindf), 1 To UBound(joindf, 2) + 1)
-    joindf = Concat(joindf, UBound(joindf, 2), rightOn, INTERNAL_SEP)
+    ReDim Preserve joinDF(1 To UBound(joinDF), 1 To UBound(joinDF, 2) + 1)
+    joinDF = Concat(joinDF, UBound(joinDF, 2), rightOn, INTERNAL_SEP)
     
 
     '# joinCols header search comes after reshape so that
     '# Reshape can extract col names
-    joinCols = HeaderIndex(joinCols, joindf)
+    joinCols = HeaderIndex(joinCols, joinDF)
     
     
     '#Header Index Match df
     Sort_Logic _
-        df:=joindf, _
-        sortOnCol:=UBound(joindf, 2), _
-        lowerBounds:=LBound(joindf) + 1, _
-        UpperBounds:=UBound(joindf)
+        df:=joinDF, _
+        sortOnCol:=UBound(joinDF, 2), _
+        lowerBounds:=LBound(joinDF) + 1, _
+        UpperBounds:=UBound(joinDF)
    
     
     For i = LBound(df) + 1 To UBound(df)
 
         Dim rowPos As Variant
-        rowPos = Search_Logic(df(i, UBound(df, 2)), joindf, UBound(joindf, 2))
+        rowPos = Search_Logic(df(i, UBound(df, 2)), joinDF, UBound(joinDF, 2))
         
         If rowPos <> NO_POSITION_ERR Then
             
             Dim j As Long
             For j = LBound(joinCols) To UBound(joinCols)
-                df(i, j + origColCount + 1) = joindf(rowPos, joinCols(j))
+                df(i, j + origColCount + 1) = joinDF(rowPos, joinCols(j))
             Next j
             
             If indicator Then
@@ -2585,7 +2184,7 @@ Function Math(ByVal df, _
     
     Dim i
     For i = LBound(df) + 1 To UBound(df)
-    
+  
         If UBound(mathCols) > 0 Then
             
             Dim mTotal
@@ -2595,7 +2194,7 @@ Function Math(ByVal df, _
             For j = LBound(mathCols) + 1 To UBound(mathCols)
                 mTotal = Math_Logic(mTotal, df(i, mathCols(j)), mathOperation)
             Next j
-                            
+            
             df(i, colToFill) = mTotal
             
         Else
@@ -2606,8 +2205,9 @@ Function Math(ByVal df, _
         If Not IsMissing(constant) Then
             df(i, colToFill) = Math_Logic(df(i, colToFill), constant, mathOperation)
         End If
-                
+            
     Next i
+    
 
     Math = df
     
@@ -2620,11 +2220,11 @@ Private Function Math_Logic(ByVal operand_1, _
                             mathOperation As MathOp)
 
     If operand_1 = "" Then
-    operand_1 = 0
+        operand_1 = 0
     End If
     
     If operand_2 = "" Then
-    operand_2 = 0
+        operand_2 = 0
     End If
     
     Select Case mathOperation
@@ -2662,8 +2262,7 @@ Function MinMaxReturn(ByVal df, _
                       searchCol, _
                       returnCol, _
                       Optional min = True, _
-                      Optional colName = "MinMax", _
-                      Optional returnSearchCol = False)
+                      Optional colName = "MinMax")
     
     groupCol = HeaderIndex(groupCol, df)
     searchCol = HeaderIndex(searchCol, df)
@@ -2671,12 +2270,7 @@ Function MinMaxReturn(ByVal df, _
         
     Dim tempdf
     tempdf = SplitOnCol(df, groupCol, colName)
-    
-    If returnSearchCol Then
-        ReDim Preserve tempdf(1 To UBound(tempdf), 1 To UBound(tempdf, 2) + 1)
-        tempdf(1, UBound(tempdf, 2)) = df(1, searchCol)
-    End If
-        
+
     Dim i
     For i = LBound(tempdf) + 1 To UBound(tempdf)
         
@@ -2700,9 +2294,6 @@ Function MinMaxReturn(ByVal df, _
                 End If
             Next j
             
-            If returnSearchCol Then
-                tempdf(i, 3) = splitdf(2, searchCol)
-            End If
             
         Else
             tempstr = splitdf(UBound(tempdf(i, 2)), returnCol)
@@ -2715,10 +2306,6 @@ Function MinMaxReturn(ByVal df, _
                 End If
             Next j
             
-            If returnSearchCol Then
-                tempdf(i, 3) = splitdf(UBound(tempdf(i, 2)), searchCol)
-            End If
-            
         End If
         
         tempdf(i, 2) = tempstr
@@ -2728,6 +2315,7 @@ Function MinMaxReturn(ByVal df, _
     MinMaxReturn = tempdf
     
 End Function
+
 
 
 Function MonthNum(ByVal df, col)
@@ -2838,6 +2426,7 @@ Function MonthName(ByVal df, col)
 End Function
 
 
+
 Function MoveCol(ByVal df, _
                  ByVal col, _
                  newPosition As Long)
@@ -2944,7 +2533,7 @@ Function Pivot(ByVal df, _
                categoryCols, _
                headerCol, _
                Optional valueCol, _
-               Optional aggregator As AggragatorOp = meanAggr)
+               Optional aggregator = "mean")
 
     categoryCols = ScalarToArray(categoryCols)
 
@@ -2957,13 +2546,14 @@ Function Pivot(ByVal df, _
         df = SelectCols(df, Array(df(1, 1), headerCol, valueCol))
     End If
          
-  
+     
     Dim finaldf
     finaldf = Unique(df, df(1, 1))
 
     Dim headerdf
     headerdf = Unique(df, 2)
     
+
     Dim i
     For i = LBound(headerdf) + 1 To UBound(headerdf)
     
@@ -2971,9 +2561,9 @@ Function Pivot(ByVal df, _
         tempdf = Filter_Fast(df, headerdf(i, 1), 2)
         
         If IsMissing(valueCol) Then
-            tempdf = Group(tempdf, tempdf(1, 1), , countAggr)
+            tempdf = Group(tempdf, 1, , "count")
         Else
-            tempdf = Group(tempdf, tempdf(1, 1), tempdf(1, 3), aggregator)
+            tempdf = Group(tempdf, 1, valueCol, aggregator)
         End If
         
         tempdf(1, 2) = headerdf(i, 1)
@@ -3052,6 +2642,41 @@ End Function
 
 
 
+Function QuickExport(ByVal df)
+    
+    Dim wb As Workbook
+    Set wb = Workbooks.Add
+    
+    Dim ws As Worksheet
+    Set ws = wb.Sheets(1)
+    
+    Dim exportRange As Range
+    Set exportRange = ws.Range( _
+        ws.Cells(1, 1), _
+        ws.Cells(UBound(df), UBound(df, 2)) _
+    )
+    
+    exportRange = df
+    
+End Function
+
+
+Function Reciprocal(ByVal df, col)
+
+    col = HeaderIndex(col, df)
+    
+    Dim i
+    For i = LBound(df) + 1 To UBound(df)
+        
+        If df(i, col) <> 0 Then
+            df(i, col) = 1 / df(i, col)
+        End If
+        
+    Next i
+
+    Reciprocal = df
+
+End Function
 
 
 Function RemoveEndCols(ByVal df, colCount)
@@ -3964,7 +3589,7 @@ Function SummarizeGroup(ByVal df, _
         splitdf = tempdf(i, 2)
         tempdf(i, 3) = UBound(splitdf) - 1
         tempdf(i, 4) = SumCols(splitdf, UBound(splitdf, 2))
-        tempdf(i, 5) = ColMean_Logic(splitdf, UBound(splitdf, 2))
+        tempdf(i, 5) = ColMean(splitdf, UBound(splitdf, 2))
         tempdf(i, 6) = GroupMedian(splitdf, UBound(splitdf, 2))
         tempdf(i, 7) = GroupMinMax(splitdf, UBound(splitdf, 2), False)
         tempdf(i, 8) = GroupMinMax(splitdf, UBound(splitdf, 2), True)
@@ -4077,22 +3702,6 @@ Function Unique(ByVal df, ByVal cols)
 End Function
 
 
-
-Function ArrayToDF(arr)
-    
-    ReDim tempdf(1 To UBound(arr) + 1, 1 To 1)
-    
-    Dim i
-    For i = LBound(tempdf) To UBound(tempdf)
-        tempdf(i, 1) = arr(i - 1)
-    Next i
-    
-    ArrayToDF = tempdf
-    
-End Function
-
-
-
 Private Function Unique_Logic(ByVal df, ByVal cols)
 
     df = Concat(df, cols(0), cols, INTERNAL_SEP, False)
@@ -4159,7 +3768,6 @@ Function Unpivot(ByVal df, _
 
     categoryCols = ScalarToArray(categoryCols)
     
-
     If UBound(categoryCols) > 0 Then
         ReDim Preserve df(1 To UBound(df), 1 To UBound(df, 2) + 1)
         df = Concat(df, UBound(df, 2), categoryCols, "<||>", False)
@@ -4168,6 +3776,7 @@ Function Unpivot(ByVal df, _
     Else
         df = MoveCol(df, categoryCols(0), 1)
     End If
+
 
     Dim uniqDF
     uniqDF = Unique(df, 1)
